@@ -3,25 +3,21 @@ name = "ace-step"
 version = "1.5.0"
 description = "ACE-Step 1.5"
 readme = "README.md"
-requires-python = "==3.11.*"
-license = {text = "MIT"}
+requires-python = ">=3.11, <3.12"
+license = {text = "Apache-2.0"}
 dependencies = [
-    # PyTorch for Windows with CUDA 12.8
-    "torch==2.7.1+cu128; sys_platform == 'win32'",
-    "torchvision==0.22.1+cu128; sys_platform == 'win32'",
-    "torchaudio==2.7.1+cu128; sys_platform == 'win32'",
-    # PyTorch for Linux with CUDA 12.8
-    "torch==2.10.0+cu128; sys_platform == 'linux'",
-    "torchvision==0.25.0+cu128; sys_platform == 'linux'",
-    "torchaudio==2.10.0+cu128; sys_platform == 'linux'",
+    # PyTorch for Linux/Windows with CUDA
+    "torch==2.10.0; sys_platform != 'darwin'",
+    "torchvision==0.20.0; sys_platform != 'darwin'",
+    "torchaudio==2.10.0; sys_platform != 'darwin'",
     # PyTorch for macOS (CPU / MPS)
-    "torch>=2.9.1; sys_platform == 'darwin' and platform_machine == 'arm64'",
-    "torchvision; sys_platform == 'darwin' and platform_machine == 'arm64'",
-    "torchaudio>=2.9.1; sys_platform == 'darwin' and platform_machine == 'arm64'",
+    "torch>=2.9.1; sys_platform == 'darwin'",
+    "torchvision; sys_platform == 'darwin'",
+    "torchaudio>=2.9.1; sys_platform == 'darwin'",
     # Common dependencies
-    "transformers>=4.51.0,<4.58.0",
+    "transformers",
     "diffusers",
-    "gradio==6.2.0",
+    "gradio",
     "matplotlib>=3.7.5",
     "scipy>=1.10.1",
     "soundfile>=0.13.1",
@@ -33,22 +29,9 @@ dependencies = [
     "uvicorn[standard]>=0.27.0",
     "numba>=0.63.1",
     "vector-quantize-pytorch>=1.27.15",
-    "torchcodec>=0.9.1",
-    "torchao",
-    "toml",
-    # MLX dependencies (Apple Silicon native acceleration - macOS only)
-    "mlx>=0.25.2; sys_platform == 'darwin' and platform_machine == 'arm64'",
-    "mlx-lm>=0.20.0; sys_platform == 'darwin' and platform_machine == 'arm64'",
-    # Training dependencies
-    "peft>=0.18.0",
-    "lightning>=2.0.0",
-    "tensorboard>=2.0.0",
+    # "torchcodec>=0.9.1",  # Disabled for CUDA stability
     # Local third-party packages
-    # nano-vllm source is configured in [tool.uv.sources]
-    "nano-vllm; sys_platform != 'darwin' or platform_machine != 'arm64'",
-    "modelscope",
-    "tensorboard>=2.20.0",
-    "typer-slim>=0.21.1",
+    "nano-vllm",
 ]
 
 [[tool.uv.index]]
@@ -56,34 +39,12 @@ name = "pytorch-cu128"
 url = "https://download.pytorch.org/whl/cu128"
 explicit = true
 
-[tool.uv]
-required-environments = [
-    "sys_platform == 'darwin' and platform_machine == 'arm64'",
-]
-
 [tool.uv.sources]
 nano-vllm = { path = "acestep/third_parts/nano-vllm" }
-torch = [
-    { index = "pytorch-cu128", marker = "sys_platform == 'win32' or sys_platform == 'linux'" },
-]
-torchvision = [
-    { index = "pytorch-cu128", marker = "sys_platform == 'win32' or sys_platform == 'linux'" },
-]
-torchaudio = [
-    { index = "pytorch-cu128", marker = "sys_platform == 'win32' or sys_platform == 'linux'" },
-]
+torch = { index = "pytorch-cu128" }
+torchvision = { index = "pytorch-cu128" }
+torchaudio = { index = "pytorch-cu128" }
 
 [project.scripts]
 acestep = "acestep.acestep_v15_pipeline:main"
 acestep-api = "acestep.api_server:main"
-acestep-download = "acestep.model_downloader:main"
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[dependency-groups]
-dev = []
-
-[tool.hatch.build.targets.wheel]
-packages = ["acestep"]
