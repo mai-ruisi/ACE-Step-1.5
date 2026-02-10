@@ -2,7 +2,7 @@
 --extra-index-url https://download.pytorch.org/whl/cu128
 torch==2.10.0; sys_platform == 'linux'
 torchaudio==2.10.0; sys_platform == 'linux'
-torchvision==0.20.0; sys_platform == 'linux'
+torchvision==0.22.0; sys_platform == 'linux'
 
 # (Optional: keep Windows entries if you care about dev on Windows)
 torch==2.7.1; sys_platform == 'win32'
